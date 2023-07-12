@@ -1,0 +1,50 @@
+{
+  // Use IntelliSense to learn about possible attributes.
+  // Hover to view descriptions of existing attributes.
+  // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Ionic serve (localhost)",
+      "type": "node-terminal",
+      "request": "launch",
+      "command": "ionic serve --port=8100 --host=localhost",
+    },
+    {
+      "name": "Ionic run (ext device)",
+      "type": "node-terminal",
+      "request": "launch",
+      "command": "ionic cap run android --livereload --external",
+    },
+    {
+      "name": "Chrome debug (localhost)",
+      "type": "chrome",
+      "request": "launch",
+      "url": "http://localhost:8100",
+      "webRoot": "${workspaceFolder}"
+    },
+    {
+      "name": "WebView debug (ext device)",
+      "type": "android-webview",
+      "request": "attach",
+      "application": "org.example.myappcodename",
+      "webRoot": "${workspaceFolder}",
+    }
+  ],
+  "compounds": [
+    {
+      "name": "All (local)",
+      "configurations": [
+        "Ionic serve (localhost)",
+        "Chrome debug (localhost)",
+      ]
+    },
+    {
+      "name": "All (ext)",
+      "configurations": [
+        "Ionic run (ext device)",
+        "WebView debug (ext device)",
+      ]
+    },
+  ]
+}

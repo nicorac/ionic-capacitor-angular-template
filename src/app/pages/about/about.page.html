@@ -1,0 +1,38 @@
+<app-header />
+
+<ion-content id="main-content">
+
+  <ion-list lines="none">
+
+    <ion-item>
+      <ion-label class="ion-text-wrap">
+        <h1>{{ version.appName }}</h1>
+        <p>Application description</p>
+      </ion-label>
+      <img src="/assets/icons/app-icon.png" style="width: 128px; aspect-ratio: 1;">
+    </ion-item>
+
+    <ion-item>
+      <ion-label class="ion-text-wrap">
+        <h2>Version</h2>
+        <p>{{ version.version }}</p>
+      </ion-label>
+    </ion-item>
+
+    <ion-item>
+      <ion-label class="ion-text-wrap">
+        <h2>Copyright</h2>
+        <p>{{ version.copyright }} (<a href="{{ version.website }}">{{ version.website }}</a>)</p>
+      </ion-label>
+    </ion-item>
+
+    <ion-item>
+      <ion-label class="ion-text-wrap">
+        <h2>Source code</h2>
+        <p>GitHub (<a href="{{ version.sources }}">{{ version.sources }}</a>)</p>
+      </ion-label>
+    </ion-item>
+
+  </ion-list>
+
+</ion-content>
