@@ -1,5 +1,25 @@
 apply plugin: 'com.android.application'
 
+/**
+ * Load signingConfigs variables from a "keystore.properties" file.
+ * Full path of this file is read from ANDROID_KEYSTORE_PROPS environment variable.
+ *
+ * File content:
+ * -----------------------------------------------------------------------------------------
+ * storeFile=<full filename of the "*.jks" key file
+ * storePassword=<password of the "*.jks" key file>
+ * keyAlias=<ID of the key to be used to sign the APK>
+ * keyPassword=<password for the key>
+ * -----------------------------------------------------------------------------------------
+ */
+System.print("Loading Android keystore config from: ")
+System.println(System.getenv("ANDROID_KEYSTORE_PROPS"))
+def keystoreProperties = new Properties()
+def keystorePropertiesFile = file(System.getenv("ANDROID_KEYSTORE_PROPS"))
+if (keystorePropertiesFile.exists()) {
+  keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+}
+
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion
     namespace "org.example"
@@ -8,20 +28,57 @@ android {
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
-        versionName "1.1"
+        versionName "0.0.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         aaptOptions {
              // Files and dirs to omit from the packaged assets dir, modified to accommodate modern web apps.
              // Default: https://android.googlesource.com/platform/frameworks/base/+/282e181b58cf72b6ca770dc7ca5f91f135444502/tools/aapt/AaptAssets.cpp#61
             ignoreAssetsPattern '!.svn:!.git:!.ds_store:!*.scc:.*:!CVS:!thumbs.db:!picasa.ini:!*~'
         }
+  }
+
+  // signature config (release only)
+  signingConfigs {
+    release {
+      keyAlias keystoreProperties['keyAlias']
+      keyPassword keystoreProperties['keyPassword']
+      storeFile file(keystoreProperties['storeFile'])
+      storePassword keystoreProperties['storePassword']
     }
+
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+      signingConfig signingConfigs.release
         }
+  }
+
+  // change generated apk name for release builds
+  applicationVariants.all { variant ->
+    if (variant.buildType.name == 'release') {
+      variant.outputs.all {
+        outputFileName = "myapplicationname-${defaultConfig.versionName}-${variant.buildType.name}.apk"
+      }
     }
+  }
+
+  sourceSets {
+    main {
+      manifest.srcFile 'src/main/AndroidManifest.xml'
+      res.srcDirs = ['src/main/res']
+    }
+
+    debug {
+      manifest.srcFile 'src/main/debug/AndroidManifest.xml'
+      //res.srcDirs = ['src/main/debug/res']
+    }
+
+    // release {
+    //    manifest.srcFile 'src/main/release/AndroidManifest.xml'
+    //    res.srcDirs = ['src/main/release/res']
+    // }
+  }
 }
 
 repositories {
